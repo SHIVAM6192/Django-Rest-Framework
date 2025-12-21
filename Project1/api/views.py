@@ -2,6 +2,8 @@ from students.models import Student
 from django.shortcuts import get_object_or_404
 from employee.models import Employee
 from .serializers import StudentSerializer, EmployeeSerializer
+from blogs.models import Blog, Comment
+from blogs.serializers import BlogSerializer, CommentSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -184,4 +186,11 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         
         
     
+class BlogsView(generics.ListCreateAPIView):                # View to list and create blogs
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+    
+class CommentsView(generics.ListCreateAPIView):             # View to list and create comments
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
     
