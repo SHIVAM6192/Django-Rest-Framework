@@ -11,6 +11,8 @@ from rest_framework.views import APIView
 from django.http import Http404
 from rest_framework import mixins, generics, viewsets
 from .paginations import CustomPagination
+from employee.filters import EmployeeFilter
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 # Create your views here.
 
@@ -184,13 +186,17 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
     pagination_class = CustomPagination   # Using custom pagination class
-    filterset_fields = ['emp_name','designation']  # Filterable fields
+    # filterset_fields = ['emp_name','designation']  # Filterable fields
+    filterset_class = EmployeeFilter      # Using custom filter class
         
         
     
 class BlogsView(generics.ListCreateAPIView):                # View to list and create blogs
     queryset = Blog.objects.all()
     serializer_class = BlogSerializer
+    filter_backends = [SearchFilter, OrderingFilter]  # Enable search filters
+    search_fields = ['blog_title', 'blog_body']  # Fields to search in
+    ordering_fields = ['id', 'blog_title']  # Fields to order by
     
 class CommentsView(generics.ListCreateAPIView):             # View to list and create comments
     queryset = Comment.objects.all()
