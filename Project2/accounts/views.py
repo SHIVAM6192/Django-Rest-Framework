@@ -16,17 +16,19 @@ class RegisterView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutView(APIView):
-    permission_classes = [IsAuthenticated]
+    authentication_classes = []  
+    permission_classes = []    
 
     def post(self, request):
-        try:
-            refresh_token = request.data.get("refresh")
-            if not refresh_token:
-                return Response(
-                    {"error": "Refresh token is required"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+        refresh_token = request.data.get("refresh")
 
+        if not refresh_token:
+            return Response(
+                {"error": "Refresh token is required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
             token = RefreshToken(refresh_token)
             token.blacklist()
 
@@ -37,6 +39,6 @@ class LogoutView(APIView):
 
         except Exception:
             return Response(
-                {"error": "Invalid or expired token"},
+                {"error": "Invalid or expired refresh token"},
                 status=status.HTTP_400_BAD_REQUEST
             )
