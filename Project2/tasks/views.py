@@ -1,13 +1,15 @@
 from django.shortcuts import render
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, DjangoModelPermissions
 from .models import Task
 from .serializers import TaskSerializer
-from .permissions import IsOwner
+from .permissions import IsOwner, CanViewTask
+from django.contrib.auth.decorators import login_required, permission_required
+
 
 class TaskListCreateView(generics.ListCreateAPIView):
     serializer_class = TaskSerializer
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticated, CanViewTask, IsOwner]
     
     def get_queryset(self):
         return Task.objects.filter(owner=self.request.user)
